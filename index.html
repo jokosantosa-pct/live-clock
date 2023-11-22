@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LIVE CLOCK - BY JS</title>
+    <link rel="icon" type="image/x-icon" href="logojs-blue.png">
+    <style>
+        body {
+            top: 0;
+            left: 0;
+            margin: 0;
+        }
+
+        .clock {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+        }
+
+        .clock p {
+            color: white;
+            font-size: 38vw;
+            font-family: monospace;
+            font-weight: bold;
+            margin: 0;
+            letter-spacing: -1vw
+        }
+    </style>
+
+    <script>
+        function startTime() {
+            const today = new Date();
+            let h = today.getHours();
+            let m = today.getMinutes();
+            let s = today.getSeconds();
+            m = checkTime(m);
+            s = checkTime(s);
+            document.getElementById('clock').innerHTML = "<p>" + h + ":" + m + "</p>";
+            document.title.innerHTML = h + ":" + m ;
+            setTimeout(startTime, 1000);
+        }
+
+        function checkTime(i) {
+            if (i < 10) { i = "0" + i };  // add zero in front of numbers < 10
+            return i;
+        }
+    </script>
+</head>
+
+<body onload="startTime()" style="background-color: black;">
+    <div id="clock" class="clock">
+
+    </div>
+</body>
+
+</html>
