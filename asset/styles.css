@@ -17,6 +17,128 @@ body {
     font-size: 15pt;
 }
 
+.setup {
+    width: 280px;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 1001;
+    position: fixed;
+    background-color: rgb(0, 0, 0, 0.85);
+    color: rgb(219, 219, 219);
+    font-size: 11pt;
+    display: none;
+    transition: 1s ease-in;
+}
+
+#header .active {
+    display: block !important;
+}
+
+.setup .container {
+    width: 90%;
+    margin: 10px;
+}
+
+.setup .title {
+    font-size: 15pt;
+    font-weight: bold;
+}
+
+.setup .container .input-group {
+    width: 100%;
+    margin: 5px 0px;
+    background-color: rgb(28, 28, 28);
+    border-radius: 5px;
+    padding: 5px;
+}
+
+.setup input {
+    padding: 5px;
+    background-color: rgb(237, 237, 237);
+    border-radius: 5px;
+    border: 2px solid;
+    border-color: rgb(237, 237, 237);
+}
+
+.setup input:focus {
+    outline: none;
+    border-color: #9ecaed;
+    box-shadow: 0 0 10px #9ecaed;
+}
+
+.setup .input-inline {
+    display: flex;
+    margin: 0;
+}
+
+.setup .input-inline * {
+    flex: 1 1 0px
+}
+
+.setup .input-inline input[type="radio"] {
+    width: min-content;
+    margin-left: 10px;
+}
+
+.setup button {
+    width: min-content !important;
+    padding: 5px 10px;
+    color: white;
+    border-radius: 5px;
+    text-decoration: none;
+    border: 1px solid;
+    cursor: pointer;
+    margin: 5px;
+}
+
+.btn-save {
+    border-color: rgb(1, 137, 200);
+    background-color: rgb(60, 115, 198);
+}
+
+.btn-cancel {
+    border-color: rgb(200, 77, 1);
+    background-color: rgb(239, 117, 30);
+}
+
+.btn-save:hover {
+    background-color: rgb(4, 111, 160);
+}
+
+.btn-cancel:hover {
+    background-color: rgb(175, 80, 12);
+}
+
+.setup-button {
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    opacity: 0;
+    font-size: 20pt;
+}
+
+.setup-button:hover {
+    opacity: 1;
+}
+
+.setup-button button {
+    border: 1px solid rgb(219, 219, 219);
+    border-radius: 5px;
+    background-color: rgba(0, 0, 0, 0.9);
+    color: rgb(219, 219, 219);
+    cursor: pointer;
+    padding: 5px 7px;
+}
+
+
+.setup-button button:hover {
+    color: white;
+    background-color: rgb(56, 56, 56, 0.5);
+}
+
+
+
 .clock {
     width: 100vw;
     height: 100vh;
@@ -127,6 +249,7 @@ body {
 
 .jadwal-sholat:hover {
     opacity: 1;
+    transition: 1s ease-in;
 }
 
 .jadwal-sholat .container {

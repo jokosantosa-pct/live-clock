@@ -6,14 +6,68 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LIVE CLOCK - BY JSPOS Group</title>
     <link rel="icon" type="image/x-icon" href="asset/logojs-blue.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" type="text/css" href="asset/styles.css" />
     <script src="asset/scripts.js"></script>
-    <script>
-
-    </script>
 </head>
 
 <body onload="loadBody()" onclick="addFooterHover()">
+    <section id="header">
+        <div id="setup" class="setup">
+            <div class="container">
+                <div class="title">
+                    Pengaturan
+                </div>
+            </div>
+            <hr>
+            <div class="container">
+                <div class="input-group">
+                    <label>Lokasi :</label>
+                    <input list="daftarKota" type="text" onkeyup="searchKota()" value="" name="setKota" id="setKota">
+                    <datalist id="daftarKota"></datalist>
+                </div>
+                <div class="input-group">
+                    <label>Latar Belakang :</label>
+                    <div class="input-inline">
+                        <label>
+                            <input type="radio" value="dynamic" name="setBg[]" checked>
+                            Dinamik
+                        </label>
+                        <label>
+                            <input type="radio" value="static" name="setBg[]">
+                            Statik
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <label>jadwal :</label>
+                    <div class="input-inline">
+                        <label>
+                            <input type="radio" value="autohide" name="setDispJadwal[]" checked>
+                            Otomatis
+                        </label>
+                        <label>
+                            <input type="radio" value="standby" name="setDispJadwal[]">
+                            Stanby
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <div class="input-inline">
+                        <button type="button" class="btn-cancel" name="cancel" onclick="toggleSetup()">Batal</button>
+                        <button type="button" class="btn-save" name="save" onclick="saveConfig()">Simpan</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="setup-button" class="setup-button">
+            <button type="button" class="btn-setup" onclick="toggleSetup()">
+                <i class="fa fa-gear"></i>
+            </button>
+        </div>
+    </section>
     <section id="clock">
         <div class="clock">
             <div class="container">

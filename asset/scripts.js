@@ -1,13 +1,41 @@
 //Create Temp data
-var temp_h1 = ""; //hour fist character
-var temp_h2 = ""; //hour second character
-var temp_m1 = ""; //minute fist character
-var temp_m2 = ""; //minute second character
+var temp_h1 = "";               //hour fist character
+var temp_h2 = "";               //hour second character
+var temp_m1 = "";               //minute fist character
+var temp_m2 = "";               //minute second character
 var temp_randomColor = "#000";
-var data = "";
+var jadwal = "";
+var daftarKota = "";
+var temp_hide = false;
+
+var isAutoHide = true;
+var isDynamic = true;
 
 function loadBody() {
+    getDaftarKota();
     getJadwalSholat();
+    setup();
+}
+
+function setup() {
+    var bg = localStorage['setBg'] || 'dynamic';
+    var dispJadwal = localStorage['dispJadwal'] || 'autohide';
+    if (bg == 'static') {
+        isDynamic = false;
+        document.querySelector('input[value="static"]').checked = true;
+    }
+
+    if (dispJadwal == 'standby') {
+        isAutoHide = false;
+        document.querySelector('input[value="standby"]').checked = true;
+    }
+
+    if (!isAutoHide) {
+        document.getElementById('jadwal-sholat').style.opacity = '1';
+    } else {
+        document.getElementById('jadwal-sholat').style.removeProperty('opacity');
+    }
+
     startTime();
 }
 
@@ -68,20 +96,24 @@ function startTime() {
 
     document.title.innerHTML = h + '.' + m;     //set Tittle Page
 
-    // const randomColor = Math.floor(Math.random() * 16777215).toString(16);
-    const randomColor = getRandomRolor();
-    document.body.style.backgroundColor = randomColor;
-    document.body.animate([
-        // key frames
-        { backgroundColor: temp_randomColor },
-        { backgroundColor: randomColor },
-    ], {
-        // sync options
-        duration: 1500,
-    });
-    temp_randomColor = randomColor;
+    if (isDynamic) {
+        const randomColor = getRandomRolor();
+        document.body.style.backgroundColor = randomColor;
+        document.body.animate([
+            // key frames
+            { backgroundColor: temp_randomColor },
+            { backgroundColor: randomColor },
+        ], {
+            // sync options
+            duration: 1500,
+        });
+        temp_randomColor = randomColor;
+    } else {
+        document.body.style.backgroundColor = '#000';
+    }
+
     setTimeout(startTime, 15000);
-    setJadwal(data);
+    setJadwalSholat();
 }
 
 function getJadwalSholat() {
@@ -90,28 +122,28 @@ function getJadwalSholat() {
     let M = checkTime(today.getMonth() + 1);      //get minute
     let Y = checkTime(today.getFullYear());      //get second
 
+    var location = localStorage['currentLocation'] || '1301';
     var date = Y + '/' + M + '/' + d;
-    var result;
-    fetch('https://api.myquran.com/v1/sholat/jadwal/0506/' + date)
+    fetch('https://api.myquran.com/v1/sholat/jadwal/' + location + '/' + date)
         .then(response => response.json())
         .then(json => {
-            setData(json.data.jadwal);
+            setJadwal(json.data.jadwal);
         })
 }
 
-function setData(jadwal) {
-    data = jadwal;
-    setJadwal(jadwal);
+function setJadwal(data) {
+    jadwal = data;
+    setJadwalSholat(jadwal);
 }
 
-function setJadwal(data) {
-    if (data != "") {
-        var shubuh = data.subuh.toString();
-        var terbit = data.terbit.toString();
-        var dhuhur = data.dzuhur.toString();
-        var ashar = data.ashar.toString();
-        var maghrib = data.maghrib.toString();
-        var isya = data.isya.toString();
+function setJadwalSholat() {
+    if (jadwal != "") {
+        var shubuh = jadwal.subuh.toString();
+        var terbit = jadwal.terbit.toString();
+        var dhuhur = jadwal.dzuhur.toString();
+        var ashar = jadwal.ashar.toString();
+        var maghrib = jadwal.maghrib.toString();
+        var isya = jadwal.isya.toString();
 
         const today = new Date();
         let h = checkTime(today.getHours());        //get hour
@@ -131,7 +163,7 @@ function setJadwal(data) {
             document.getElementById('ashar').parentElement.className += ' blink active';
         } else if (parseInt(h + m) <= parseInt(maghrib.replace(':', ''))) {
             removeActiveClass();
-            document.getElementById('ashar').parentElement.className += ' blink active';
+            document.getElementById('maghrib').parentElement.className += ' blink active';
         } else if (parseInt(h + m) <= parseInt(isya.replace(':', ''))) {
             removeActiveClass();
             document.getElementById('isya').parentElement.className += ' blink active';
@@ -172,6 +204,78 @@ function checkTime(i) {
 }
 
 function addFooterHover() {
-    document.getElementById('jadwal-sholat').style.opacity = '1';
-    setTimeout(function () { document.getElementById('jadwal-sholat').style.removeProperty('opacity') }, 10000);
+    var checkSetup = document.getElementById('setup').classList.contains('active');
+    if ((!temp_hide || checkSetup) && isAutoHide) {
+        document.getElementById('jadwal-sholat').style.opacity = '1';
+        document.getElementById('setup-button').style.opacity = '1';
+        temp_hide = true;
+        setTimeout(function () {
+            document.getElementById('jadwal-sholat').style.removeProperty('opacity');
+            if (!checkSetup) {
+                document.getElementById('setup-button').style.removeProperty('opacity');
+            }
+            temp_hide = false;
+        }, 10000);
+    }
+}
+
+function getDaftarKota() {
+    fetch('https://api.myquran.com/v1/sholat/kota/semua')
+        .then(response => response.json())
+        .then(json => {
+            setDaftarKota(json);
+        })
+}
+
+function setDaftarKota(data) {
+
+    var location = localStorage['currentLocation'] || '0506';
+    daftarKota = data;
+    var namaKota = daftarKota.find(data => data.id === location).lokasi;
+    document.getElementById('setKota').value = namaKota;
+}
+
+function searchKota() {
+
+    var keyword = document.getElementById('setKota').value;
+    let kota;
+    keyword = keyword.toUpperCase();
+    if (keyword.length > 2 && keyword.trim() !== "KOTA" && keyword.trim() !== "KOT" && keyword.trim() !== "KAB") {
+        kota = daftarKota.filter(data => {
+            var lokasi = data.lokasi;
+            if (lokasi.indexOf(keyword) > -1) {
+                return true;
+            } else {
+                return false;
+            }
+        });
+
+    } else {
+        kota = [];
+    }
+    document.getElementById('daftarKota').innerHTML = "";
+    if (kota.length > 0) {
+        kota.forEach((value) => {
+            document.getElementById('daftarKota').innerHTML += "<option value='" + value.lokasi + "'>";
+        });
+    }
+}
+
+function setKota(id) {
+    localStorage['currentLocation'] = id;
+    getJadwalSholat();
+}
+
+function saveConfig() {
+    var kota = document.getElementById('setKota').value;
+    var idKota = daftarKota.find(data => data.lokasi === kota).id;
+    localStorage['setBg'] = document.querySelector('input[name="setBg[]"]:checked').value;
+    localStorage['dispJadwal'] = document.querySelector('input[name="setDispJadwal[]"]:checked').value;
+    setKota(idKota);
+    toggleSetup();
+    setup();
+}
+
+function toggleSetup() {
+    document.getElementById('setup').classList.toggle('active');
 }
